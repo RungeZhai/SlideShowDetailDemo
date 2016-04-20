@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <meta charset="utf-8">
+    </head>
+
+    <style>
+
+        body {
+            margin: 0px;
+            font-size: 15px;
+        }
+
+        .title {
+            height: 41px;
+            line-height: 50px;
+            padding-left: 16px;
+            color: #9F9F9F;
+        }
+
+        .item {
+            background: white;
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+
+        .item-title {
+            height: 44px;
+            line-height: 44px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .arrow {
+            float: right;
+            height: 10px;
+            width: 15px;
+            position: relative;
+            top: 50%;
+            transform: translateY(-50%);
+            -webkit-transform: translateY(-50%);
+        }
+
+        .item-content {
+            display: none;
+            overflow: hidden;
+        }
+
+        .item-content-detail {
+            color: #A3A3A3;
+            padding: 16px 0px;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            font-size: 15px;
+        }
+
+        hr {
+            display: block;
+            -webkit-margin-before: 0px;
+            -webkit-margin-after: 0px;
+            -webkit-margin-start: auto;
+            -webkit-margin-end: auto;
+            margin-left: -16px;
+            margin-right: -16px;
+            border: none;
+            height: 1px;
+            width: 100%;
+            background-color: #E5E5E5;
+            position: absolute;
+        }
+
+        /* we use translateY to center vertically, so we have to preserve it */
+        .upsidedown {
+            -ms-transform: rotate(180deg) translateY(50%); /* IE 9 */
+            -webkit-transform: rotate(180deg) translateY(50%); /* Chrome, Safari, Opera */
+            transform: rotate(180deg) translateY(50%);
+        }
+
+    </style>
+
+    <body style="background: #EEEEEE;">
+
+        <script src="vendors/jquery/jquery-1.12.1.js"></script>
+
+        <div class="title">
+            About open source license：
+        </div>
+
+
+        <!--*************************************************************************************-->
+
+        <div class="item item-title">
+            <hr>
+            MIT License
+            <img class="arrow" src="arrow.png">
+        </div>
+
+        <div class="item item-content">
+            <hr>
+            <p class="item-content-detail">
+                The MIT License is a permissive license that is short and to the point. It lets people do anything they want with your code as long as they provide attribution back to you and don’t hold you liable.
+            </p>
+        </div>
+
+
+        <!--*************************************************************************************-->
+
+        <div class="item item-title">
+            <hr>
+            Apache License 2.0
+            <img class="arrow" src="arrow.png">
+        </div>
+
+        <div class="item item-content">
+            <hr>
+            <p class="item-content-detail">
+                The Apache License 2.0 is a permissive license similar to the MIT License, but also provides an express grant of patent rights from contributors to users.
+            </p>
+        </div>
+
+
+        <!--*************************************************************************************-->
+
+        <div class="item item-title">
+            <hr>
+            GNU GPLv3
+            <img class="arrow" src="arrow.png">
+        </div>
+
+        <div class="item item-content">
+            <hr>
+            <p class="item-content-detail">
+                The GNU GPLv3 is a copyleft license that requires anyone who distributes your code or a derivative work to make the source available under the same terms, and also provides an express grant of patent rights from contributors to users.
+            </p>
+        </div>
+
+        <script>
+
+            var itemTitles = document.getElementsByClassName('item-title');
+            for (var i = 0; i < itemTitles.length; ++i) {
+                var $element = itemTitles[i];
+
+                // handle ios safari touch delay
+                if (('ontouchend' in window)) {
+                    $element.ontouchend = onClickTitle;
+                } else {
+                    $element.onclick = onClickTitle;
+                }
+            }
+
+            function onClickTitle(e) {
+                var $image = this.getElementsByTagName('img')[0];
+                var $content = this.nextElementSibling;
+
+                slideToggle($content, 300, function(slideToShow) {
+                    var upsidedown = 'upsidedown';
+                    if (slideToShow) {
+                        addClass($image, upsidedown);
+                    } else {
+                        removeClass($image, upsidedown);
+                    }
+                });
+            }
+
+            function slideToggle(element, duration, callback) {
+
+                var isElementHidden = isHidden(element);
+
+                var s = element.style;
+                s.display = 'block';    // to get the height of the element
+
+                var elementHeight = element.clientHeight;
+
+                var y = isElementHidden ? 0 : elementHeight;
+                var frameRate = 24;
+                var interval = duration / frameRate;
+                var totalFrames = duration / interval;
+                var heightIncrement = elementHeight / totalFrames;
+
+                heightIncrement = isElementHidden ? heightIncrement : -heightIncrement;
+
+                var tween = function () {
+                    y += heightIncrement;
+                    s.height = y + 'px';
+
+                    var check = isElementHidden ? (y < elementHeight) : (y > 0);
+                    if (check) {
+                        setTimeout(tween, interval);
+                    } else {
+                        s.removeProperty('height'); // distraction to get the real height
+                        s.display = isElementHidden ? 'block' : 'none';
+                        callback(isElementHidden);
+                    }
+                }
+                
+                tween();
+            }
+
+            // Where el is the DOM element you'd like to test for visibility
+            function isHidden(el) {
+                var style = window.getComputedStyle(el);
+                return (style.display === 'none');
+            }
+
+            function addClass(el, className) {
+                if (el.classList) {
+                    el.classList.add(className);
+                } else {
+                    el.className += ' ' + className;
+                }
+            }
+
+            function removeClass(el, className) {
+                el.className = el.className.replace(className, '');
+            }
+
+        </script>
+
+    </body>
+</html>
